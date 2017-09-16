@@ -14,15 +14,17 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
 
 #pragma mark - Initialization
 
-- (instancetype)init {
+- (instancetype)init
+{
     self = [super init];
-    if(self) {
+    if (self) {
         [self setup];
     }
     return self;
 }
 
-- (void)setup {
+- (void)setup
+{
     // Defaults
     self.animationDelay = 0.0;
     self.animationDuration = 0.7;
@@ -34,7 +36,8 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
 
 #pragma mark Presentation/Dismissal
 
-- (void)presentationWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+- (void)presentationWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView animated:(BOOL)animated completion:(void (^)(BOOL))completion
+{
     void (^springAnimation)(void) = ^{
         [self applyTransformsWithSide:drawerSide sideView:sideView centerView:centerView];
     };
@@ -47,12 +50,14 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
                             options:UIViewAnimationOptionCurveLinear
                          animations:springAnimation
                          completion:nil];
-    } else {
+    }
+    else {
         springAnimation(); // Call spring animation block without animating
     }
 }
 
-- (void)dismissWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+- (void)dismissWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView animated:(BOOL)animated completion:(void (^)(BOOL))completion
+{
     void (^springAnimation)(void) = ^{
         [self removeTransformsWithSide:drawerSide sideView:sideView centerView:centerView];
     };
@@ -63,17 +68,22 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
              usingSpringWithDamping:self.springDamping
               initialSpringVelocity:self.initialSpringVelocity
                             options:UIViewAnimationOptionCurveLinear
-                         animations:springAnimation completion:completion];
-    } else {
+                         animations:springAnimation
+                         completion:completion];
+    }
+    else {
         springAnimation(); // Call spring animation block without animating
     }
 }
 
 #pragma mark Orientation
 
-- (void)willRotateOpenDrawerWithOpenSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView {}
+- (void)willRotateOpenDrawerWithOpenSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView
+{
+}
 
-- (void)didRotateOpenDrawerWithOpenSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView {
+- (void)didRotateOpenDrawerWithOpenSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView
+{
     void (^springAnimation)(void) = ^{
         [self applyTransformsWithSide:drawerSide sideView:sideView centerView:centerView];
     };
@@ -96,12 +106,13 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
  *  @param anchorPoint The anchor point being moved
  *  @param view        The view of who's anchor point is being moved
  */
-- (void)setAnchorPoint:(CGPoint)anchorPoint forView:(UIView *)view {
-    CGPoint newPoint = CGPointMake(view.bounds.size.width  * anchorPoint.x,
-                                   view.bounds.size.height * anchorPoint.y);
+- (void)setAnchorPoint:(CGPoint)anchorPoint forView:(UIView *)view
+{
+    CGPoint newPoint = CGPointMake(view.bounds.size.width * anchorPoint.x,
+        view.bounds.size.height * anchorPoint.y);
 
-    CGPoint oldPoint = CGPointMake(view.bounds.size.width  * view.layer.anchorPoint.x,
-                                   view.bounds.size.height * view.layer.anchorPoint.y);
+    CGPoint oldPoint = CGPointMake(view.bounds.size.width * view.layer.anchorPoint.x,
+        view.bounds.size.height * view.layer.anchorPoint.y);
 
     newPoint = CGPointApplyAffineTransform(newPoint, view.transform);
     oldPoint = CGPointApplyAffineTransform(oldPoint, view.transform);
@@ -120,8 +131,9 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
 
 #pragma mark Transforms
 
-- (void)applyTransformsWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView {
-    CGFloat sideWidth   = sideView.bounds.size.width;
+- (void)applyTransformsWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView
+{
+    CGFloat sideWidth = sideView.bounds.size.width;
     CGFloat direction = (drawerSide == JVFloatingDrawerSideLeft) ? 1.0 : -1.0;
 
     CGFloat sideViewHorizontalOffset = direction * sideWidth;
@@ -137,22 +149,25 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
     centerView.transform = CGAffineTransformConcat(centerScale, centerTranslate);
 }
 
-- (void)removeTransformsWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView {
+- (void)removeTransformsWithSide:(JVFloatingDrawerSide)drawerSide sideView:(UIView *)sideView centerView:(UIView *)centerView
+{
     sideView.transform = CGAffineTransformIdentity;
     centerView.transform = CGAffineTransformIdentity;
 }
 
-- (void)moveBackWithTranslation:(CGPoint)trans sideView:(UIView *)sideView centerView:(UIView *)centerView {
+- (void)moveBackWithTranslation:(CGPoint)trans sideView:(UIView *)sideView centerView:(UIView *)centerView
+{
     CGFloat transX = trans.x;
     CGFloat transWidth = fabs(transX);
     BOOL toLeft = (transX >= 0.0);
 
-    CGFloat sideWidth   = sideView.bounds.size.width;
+    CGFloat sideWidth = sideView.bounds.size.width;
 
     CGFloat direction = toLeft ? 1.0 : -1.0;
     CGFloat ratio = (transWidth / sideWidth);
 
-    if (ratio > 1.0) return;
+    if (ratio > 1.0)
+        return;
 
     CGFloat sideViewHorizontalOffset = direction * (transWidth - sideWidth);
     CGFloat centerScaleValue = kJVCenterViewDestinationScale + (1.0 - kJVCenterViewDestinationScale) * ratio;
@@ -167,16 +182,18 @@ static const CGFloat kJVCenterViewDestinationScale = 1.0;
     centerView.transform = CGAffineTransformConcat(centerScale, centerTranslate);
 }
 
-- (void)moveWithTranslation:(CGPoint)trans sideView:(UIView *)sideView centerView:(UIView *)centerView {
+- (void)moveWithTranslation:(CGPoint)trans sideView:(UIView *)sideView centerView:(UIView *)centerView
+{
     CGFloat transX = trans.x;
     CGFloat transWidth = fabs(transX);
     BOOL toLeft = (transX >= 0.0);
 
-    CGFloat sideWidth   = sideView.bounds.size.width;
+    CGFloat sideWidth = sideView.bounds.size.width;
     CGFloat direction = toLeft ? 1.0 : -1.0;
     CGFloat ratio = (transWidth / sideWidth);
 
-    if (ratio > 1.0) return;
+    if (ratio > 1.0)
+        return;
 
     CGFloat sideViewHorizontalOffset = direction * transWidth;
     CGFloat centerScaleValue = 1.0 - (1.0 - kJVCenterViewDestinationScale) * ratio;
