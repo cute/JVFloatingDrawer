@@ -266,8 +266,9 @@ static const CGFloat kJVDefaultViewContainerWidth = 300.0;
         CALayer *shadowLayer = [CALayer layer];
         self.shadowLayer = shadowLayer;
         shadowLayer.backgroundColor = [[UIColor colorWithWhite:0 alpha:0.3] CGColor];
+        shadowLayer.opacity = 0;
     }
-    
+
     self.shadowLayer.frame = layer.bounds;
     [layer addSublayer:self.shadowLayer];
 }
