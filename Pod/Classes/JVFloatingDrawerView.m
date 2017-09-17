@@ -265,9 +265,10 @@ static const CGFloat kJVDefaultViewContainerWidth = 300.0;
     if (!self.shadowLayer) {
         CALayer *shadowLayer = [CALayer layer];
         self.shadowLayer = shadowLayer;
-        shadowLayer.frame = layer.bounds;
         shadowLayer.backgroundColor = [[UIColor colorWithWhite:0 alpha:0.3] CGColor];
     }
+    
+    self.shadowLayer.frame = layer.bounds;
     [layer addSublayer:self.shadowLayer];
 }
 
@@ -289,6 +290,12 @@ static const CGFloat kJVDefaultViewContainerWidth = 300.0;
         CGAffineTransform value = [change[NSKeyValueChangeNewKey] CGAffineTransformValue];
         self.shadowLayer.opacity = value.tx / kJVDefaultViewContainerWidth;
     }
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    self.shadowLayer.frame = self.bounds;
 }
 
 @end
