@@ -9,6 +9,7 @@
 #import "JVFloatingDrawerView.h"
 
 static const CGFloat kJVDefaultViewContainerWidth = 300.0;
+static void *kTransformKVOContext = &kTransformKVOContext;
 
 @interface JVFloatingDrawerView ()
 
@@ -45,7 +46,7 @@ static const CGFloat kJVDefaultViewContainerWidth = 300.0;
     shadowLayer.backgroundColor = [[UIColor colorWithWhite:0 alpha:0.3] CGColor];
     shadowLayer.opacity = 0.0;
 
-    [self.centerViewContainer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:NULL];
+    [self.centerViewContainer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:kTransformKVOContext];
 }
 
 - (void)setupBackgroundImageView
@@ -285,9 +286,12 @@ static const CGFloat kJVDefaultViewContainerWidth = 300.0;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey, id> *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"transform"]) {
+    if (context == kTransformKVOContext){
         CGAffineTransform value = [change[NSKeyValueChangeNewKey] CGAffineTransformValue];
         self.shadowLayer.opacity = value.tx / kJVDefaultViewContainerWidth;
+    }
+    else{
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
