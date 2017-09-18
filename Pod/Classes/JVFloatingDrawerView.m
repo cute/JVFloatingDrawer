@@ -39,6 +39,12 @@ static const CGFloat kJVDefaultViewContainerWidth = 300.0;
     [self setupRightViewContainer];
 
     [self bringSubviewToFront:self.centerViewContainer];
+
+    CALayer *shadowLayer = [CALayer layer];
+    self.shadowLayer = shadowLayer;
+    shadowLayer.backgroundColor = [[UIColor colorWithWhite:0 alpha:0.3] CGColor];
+    shadowLayer.opacity = 0.0;
+
     [self.centerViewContainer addObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
@@ -260,15 +266,7 @@ static const CGFloat kJVDefaultViewContainerWidth = 300.0;
 {
     UIView *view = self.centerViewContainer.subviews.firstObject;
     view.userInteractionEnabled = NO;
-
     CALayer *layer = self.centerViewContainer.layer;
-    if (!self.shadowLayer) {
-        CALayer *shadowLayer = [CALayer layer];
-        self.shadowLayer = shadowLayer;
-        shadowLayer.backgroundColor = [[UIColor colorWithWhite:0 alpha:0.3] CGColor];
-        shadowLayer.opacity = 0;
-    }
-
     self.shadowLayer.frame = layer.bounds;
     [layer addSublayer:self.shadowLayer];
 }
