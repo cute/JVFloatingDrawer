@@ -254,6 +254,17 @@ static BOOL canMove = NO;
             canMove = (transY < 16.0);
             [self.drawerView willOpenFloatingDrawerViewController:self];
         }
+        else if (gesture.state == UIGestureRecognizerStateCancelled) {
+            UIView *sideView = [self.drawerView viewContainerForDrawerSide:self.currentlyOpenedSide];
+            UIView *centerView = self.drawerView.centerViewContainer;
+            if (toLeft) {
+                [self.animator dismissWithSide:JVFloatingDrawerSideLeft sideView:sideView centerView:centerView animated:YES completion:nil];
+            }
+            else {
+                [self.animator dismissWithSide:JVFloatingDrawerSideRight sideView:sideView centerView:centerView animated:YES completion:nil];
+            }
+            [self.drawerView willCloseFloatingDrawerViewController:self];
+        }
         else if (gesture.state == UIGestureRecognizerStateChanged) {
             if (!canMove) {
                 return;
